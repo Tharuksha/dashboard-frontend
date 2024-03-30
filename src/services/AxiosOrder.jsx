@@ -1,8 +1,14 @@
 import axios from "axios";
 
-const instance = axios.create({
+export const instance = axios.create({
   baseURL:
-    "https://4dd8-2a09-bac1-4360-00-23-409.ngrok-free.app/api",
+    "http://localhost:8080/api",
 });
 
-export default instance;
+export const instance2 = axios.create({
+  baseURL: "http://localhost:8181/api",
+});
+
+export const instance3 = axios.create({
+  baseURL: "http://localhost:8282/api/orders",
+});

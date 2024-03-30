@@ -12,13 +12,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Link, useNavigate } from "react-router-dom";
-import instance from "../../services/AxiosOrder";
+import { instance } from "../../services/AxiosOrder";
 
 export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [f_name, setFirstName] = useState("");
-  const [l_name, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
@@ -32,8 +32,8 @@ export default function Register() {
       const response = await instance.post("/signup", {
         email,
         password,
-        f_name,
-        l_name,
+        firstName,
+        lastName,
         role: "user",
       });
       console.log(response);
