@@ -80,10 +80,10 @@ export default function ManageAdmin() {
         response.status === 200 &&
         response.data &&
         response.data.users &&
-        response.data.users.id
+        response.data.users.userid
       ) {
-        console.log("New admin ID:", response.data.users.id);
-        const newAdminWithId = { ...newAdmin, id: response.data.users.id };
+        console.log("New admin ID:", response.data.users.userid);
+        const newAdminWithId = { ...newAdmin, userid: response.data.users.userid };
         setAdmins((prevAdmins) => [...prevAdmins, newAdminWithId]);
         setShowAddDialog(false);
         toast.success("Admin added successfully");
