@@ -6,7 +6,7 @@ export const instance = axios.create({
 });
 
 export const instance2 = axios.create({
-  baseURL: "api-ad.tharuksha.com/api",
+  baseURL: "http://api-ad.tharuksha.com/api",
 });
 
 export const instance3 = axios.create({
