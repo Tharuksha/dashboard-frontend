@@ -34,8 +34,8 @@ export default function ManageAdmin() {
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [newAdmin, setNewAdmin] = useState({
-    f_name: "",
-    l_name: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: "",
     role: "admin",
@@ -71,8 +71,8 @@ export default function ManageAdmin() {
       const response = await instance.post("/signup", {
         email: newAdmin.email,
         password: newAdmin.password,
-        f_name: newAdmin.f_name,
-        l_name: newAdmin.l_name,
+        firstname: newAdmin.firstname,
+        lastname: newAdmin.lastname,
         role: "admin",
       });
 
@@ -88,8 +88,8 @@ export default function ManageAdmin() {
         setShowAddDialog(false);
         toast.success("Admin added successfully");
         setNewAdmin({
-          f_name: "",
-          l_name: "",
+          firstname: "",
+          lastname: "",
           email: "",
           password: "",
           role: "admin",
@@ -134,8 +134,8 @@ export default function ManageAdmin() {
       setLoading(true);
       try {
         const updatedUser = {
-          f_name: document.getElementById("f_name").value,
-          l_name: document.getElementById("l_name").value,
+          firstname: document.getElementById("firstname").value,
+          lastname: document.getElementById("lastname").value,
           email: document.getElementById("email").value,
           role: "admin",
         };
@@ -191,7 +191,7 @@ export default function ManageAdmin() {
             <TableRow key={user.id}>
               <TableCell>{user.id}</TableCell>
               <TableCell>
-                {user.f_name} {user.l_name}
+                {user.firstname} {user.lastname}
               </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
@@ -246,9 +246,9 @@ export default function ManageAdmin() {
                 <Label htmlFor="f_name_new">First Name</Label>
                 <Input
                   id="f_name_new"
-                  value={newAdmin.f_name}
+                  value={newAdmin.firstname}
                   onChange={(e) =>
-                    setNewAdmin({ ...newAdmin, f_name: e.target.value })
+                    setNewAdmin({ ...newAdmin, firstname: e.target.value })
                   }
                   className="col-span-3"
                   required
@@ -258,9 +258,9 @@ export default function ManageAdmin() {
                 <Label htmlFor="l_name_new">Last Name</Label>
                 <Input
                   id="l_name_new"
-                  value={newAdmin.l_name}
+                  value={newAdmin.lastname}
                   onChange={(e) =>
-                    setNewAdmin({ ...newAdmin, l_name: e.target.value })
+                    setNewAdmin({ ...newAdmin, lastname: e.target.value })
                   }
                   className="col-span-3"
                   required
@@ -311,8 +311,8 @@ export default function ManageAdmin() {
                 type="button"
                 onClick={handleSaveNewAdmin}
                 disabled={
-                  !newAdmin.f_name ||
-                  !newAdmin.l_name ||
+                  !newAdmin.firstname ||
+                  !newAdmin.lastname ||
                   !newAdmin.email ||
                   newAdmin.password.length < 1
                 }
@@ -347,18 +347,18 @@ export default function ManageAdmin() {
 
             <div className="grid gap-4 py-4">
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="f_name">First Name</Label>
+                <Label htmlFor="firstname">First Name</Label>
                 <Input
-                  id="f_name"
-                  defaultValue={selectedAdmin?.f_name}
+                  id="firstname"
+                  defaultValue={selectedAdmin?.firstname}
                   className="col-span-3"
                 />
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="l_name">Last Name</Label>
+                <Label htmlFor="lastname">Last Name</Label>
                 <Input
-                  id="l_name"
-                  defaultValue={selectedAdmin?.l_name}
+                  id="lastname"
+                  defaultValue={selectedAdmin?.lastname}
                   className="col-span-3"
                 />
               </div>

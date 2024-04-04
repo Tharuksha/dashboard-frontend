@@ -7,7 +7,7 @@ import { LogOut } from "lucide-react";
 
 const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState(() => <ManageAdmin />);
-  const f_name = localStorage.getItem("firstname");
+  const firstname = localStorage.getItem("firstname");
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -38,7 +38,7 @@ const AdminDashboard = () => {
       <div className="flex-1 flex flex-col">
         {/* Header */}
         <div className="bg-gray-700 text-white p-5 flex justify-between items-center">
-          <h2 className="text-2xl">Hello, {f_name}👋</h2>
+          <h2 className="text-2xl">Hello, {firstname}👋</h2>
 
           <Button onClick={handleLogout} variant="destructive" size="icon">
             <LogOut size={20} />
