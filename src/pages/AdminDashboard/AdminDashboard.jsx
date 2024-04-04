@@ -7,7 +7,7 @@ import { LogOut } from "lucide-react";
 
 const AdminDashboard = () => {
   const [activeComponent, setActiveComponent] = useState(() => <ManageAdmin />);
-  const f_name = localStorage.getItem("f_name");
+  const f_name = localStorage.getItem("firstname");
   const navigate = useNavigate();
 
   const handleLogout = () => {

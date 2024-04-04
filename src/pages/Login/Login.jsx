@@ -33,11 +33,11 @@ export default function Login() {
       .then((response) => {
         const token = response.data.token;
         const role = response.data.role;
-        const f_name = response.data.f_name;
+        const firstname = response.data.firstname;
         console.log(response);
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
-        localStorage.setItem("f_name", f_name);
+        localStorage.setItem("firstname", firstname);
 
         // Early return end if the token is not valid
         if (token === undefined) {
