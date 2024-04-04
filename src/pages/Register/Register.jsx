@@ -32,8 +32,8 @@ export default function Register() {
       const response = await instance.post("/signup", {
         email,
         password,
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         role: "user",
       });
       console.log(response);
