@@ -4,7 +4,7 @@ import { Image } from "cloudinary-react";
 const ManageBooks = () => {
   const [image, setImage] = useState(null);
   const [bookName, setBookName] = useState("");
-  const [url, setUrl] = useState("");
+  const [imgName, setImgName] = useState(""); // State to hold the image name
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(null);
 
@@ -12,24 +12,52 @@ const ManageBooks = () => {
     setLoading(true);
     const data = new FormData();
     data.append("file", image);
-    data.append("book_name", bookName);
-    data.append("cloud_name", "dtsxmoqei");
-    data.append("upload_preset", "dezogazb");
-
+    data.append("book_name", bookName); // Assuming you want to send the book name to Cloudinary
+    data.append("cloud_name", "drndhbibq");
+    data.append("upload_preset", "doba_test");
+    
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/dtsxmoqei/image/upload`,
+        `https://api.cloudinary.com/v1_1/drndhbibq/image/upload`,
         {
           method: "POST",
           body: data,
         }
       );
       const res = await response.json();
-      setUrl(res.public_id);
+      setImgName(res.public_id); // Set image name (assuming public_id is the image name)
       setLoading(false);
+
+      // Now, send the book details to your API
+      uploadBookDetails(bookName, res.public_id);
     } catch (error) {
       console.error("Error uploading image:", error);
       setLoading(false);
+    }
+  };
+
+  const uploadBookDetails = async (bookName, imgName) => {
+    const bookData = {
+      bookName,
+      imgName,
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/books/addBook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookData),
+      });
+
+      if (response.ok) {
+        console.log('Book details uploaded successfully');
+      } else {
+        console.error('Failed to upload book details');
+      }
+    } catch (error) {
+      console.error('Error uploading book details:', error);
     }
   };
 
@@ -49,6 +77,7 @@ const ManageBooks = () => {
     setPreview(null);
     setImage(null);
     setBookName("");
+    setImgName("");
   };
 
   return (
@@ -101,12 +130,12 @@ const ManageBooks = () => {
           </div>
         ) : (
           <div>
-            {url && (
+            {imgName && (
               <div className="pb-8 pt-4">
                 <p className="text-black mb-2">Book Name: {bookName}</p>
                 <Image
                   cloudName="dtsxmoqei"
-                  publicId={url}
+                  publicId={imgName}
                   width="300"
                   crop="scale"
                 />
