@@ -105,14 +105,14 @@ export default function ManageAdmin() {
     }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = (userid) => {
     setLoading(true);
-    setSelectedAdmin({ id });
+    setSelectedAdmin({ userid });
     instance2
-      .delete(`/users/${id}`)
+      .delete(`/users/${userid}`)
       .then(() => {
         setAdmins((prevAdmins) =>
-          prevAdmins.filter((admin) => admin.id !== id)
+          prevAdmins.filter((admin) => admin.userid !== userid)
         );
         toast.success("Admin deleted successfully");
         setSelectedAdmin(null);
@@ -141,13 +141,13 @@ export default function ManageAdmin() {
         };
 
         const response = await instance2.put(
-          `/users/${selectedAdmin.id}`,
+          `/users/${selectedAdmin.userid}`,
           updatedUser
         );
         if (response.status === 200) {
           setAdmins((prevAdmins) =>
             prevAdmins.map((user) =>
-              user.id === selectedAdmin.id ? { ...user, ...updatedUser } : user
+              user.userid === selectedAdmin.userid ? { ...user, ...updatedUser } : user
             )
           );
           setShowEditDialog(false);
@@ -188,15 +188,15 @@ export default function ManageAdmin() {
         </TableHeader>
         <TableBody>
           {admins.map((user) => (
-            <TableRow key={user.id}>
-              <TableCell>{user.id}</TableCell>
+            <TableRow key={user.userid}>
+              <TableCell>{user.userid}</TableCell>
               <TableCell>
                 {user.firstname} {user.lastname}
               </TableCell>
               <TableCell>{user.email}</TableCell>
               <TableCell>{user.role}</TableCell>
               <TableCell>
-                {loading && selectedAdmin?.id === user.id ? (
+                {loading && selectedAdmin?.userid === user.userid ? (
                   <Button disabled>
                     <Loader2 className="animate-spin" />
                     Please wait...
@@ -204,7 +204,7 @@ export default function ManageAdmin() {
                 ) : (
                   <>
                     <Button
-                      onClick={() => handleDelete(user.id)}
+                      onClick={() => handleDelete(user.userid)}
                       variant="destructive"
                       size="icon"
                     >
