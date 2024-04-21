@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Trash2, Loader2, NotebookPen, X } from "lucide-react";
+import { Trash2, NotebookPen, X } from "lucide-react";
 import { instance2 } from "../../services/AxiosOrder";
 // import { Image } from "cloudinary-react";
 import toast, { Toaster } from "react-hot-toast";
@@ -23,10 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
-import ReactDatePicker from "react-datepicker";
-import DatePicker from "@/components/ui/datepicker";
+
 
 export default function ManageBooks() {
 
@@ -332,7 +329,7 @@ const handleUpdateBook = async () => {
             <DialogHeader>
               <DialogTitle>Edit Book Details</DialogTitle>
               <DialogDescription>
-                Make the necessary changes related to books here. And click "save" when you're done.
+                Make the necessary changes related to books here.
               </DialogDescription>
               <Button
                 onClick={() => {
