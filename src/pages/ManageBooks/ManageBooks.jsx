@@ -1,151 +1,563 @@
-import { useState } from "react";
-import { Image } from "cloudinary-react";
+import { useState, useEffect } from "react";
+import { Trash2, Loader2, NotebookPen, X } from "lucide-react";
+import { instance2 } from "../../services/AxiosOrder";
+// import { Image } from "cloudinary-react";
+import toast, { Toaster } from "react-hot-toast";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import ReactDatePicker from "react-datepicker";
+import DatePicker from "@/components/ui/datepicker";
 
-const ManageBooks = () => {
-  const [image, setImage] = useState(null);
-  const [bookName, setBookName] = useState("");
-  const [imgName, setImgName] = useState(""); // State to hold the image name
-  const [loading, setLoading] = useState(false);
-  const [preview, setPreview] = useState(null);
+export default function ManageBooks() {
 
-  const uploadImage = async () => {
-    setLoading(true);
-    const data = new FormData();
-    data.append("file", image);
-    data.append("book_name", bookName); // Assuming you want to send the book name to Cloudinary
-    data.append("cloud_name", "drndhbibq");
-    data.append("upload_preset", "doba_test");
-    
-    try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/drndhbibq/image/upload`,
-        {
-          method: "POST",
-          body: data,
+  const [showAddDialog, setShowAddDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [allBooks, setAllBooks] = useState([]);
+
+  const [newBook, setNewBook] = useState({
+    bookName: "",
+    bookAuthor: "",
+    publisher: "",
+    isbn: "",
+    addedOn: null,
+    quantity: 0,
+  });
+  // show all the books in a array list
+  useEffect(() => {
+    instance2
+      .get("/books/getAll")
+      .then((response) => {
+        if (Array.isArray(response.data)) {
+          setAllBooks(response.data);
+        } else {
+          console.log(
+            "Data is not available in array: ",
+            typeof response.data
+          );
         }
-      );
-      const res = await response.json();
-      setImgName(res.public_id); // Set image name (assuming public_id is the image name)
-      setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error loading Books: ", error);
+      });
+  }, []);
 
-      // Now, send the book details to your API
-      uploadBookDetails(bookName, res.public_id);
-    } catch (error) {
-      console.error("Error uploading image:", error);
-      setLoading(false);
-    }
-  };
 
-  const uploadBookDetails = async (bookName, imgName) => {
-    const bookData = {
-      bookName,
-      imgName,
-    };
-
+  //save new book 
+  const handleSaveNewBook = async () => {
     try {
-      const response = await fetch('http://localhost:8080/books/addBook', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookData),
+      const response = await instance2.post("/books/add", {
+        bookName: newBook.bookName,
+        bookAuthor: newBook.bookAuthor,
+        publisher: newBook.publisher,
+        isbn: newBook.isbn,
+        addedOn: new Date().toISOString().substring(0, 10),
+        quantity: newBook.quantity
       });
 
-      if (response.ok) {
-        console.log('Book details uploaded successfully');
+      //success message
+      console.log("New book added:", response.data);
+      toast.success("New book added successfully");
+      setNewBook({
+        bookName: "",
+        bookAuthor: "",
+        publisher: "",
+        isbn: "",
+        addedOn: null,
+        quantity: 0,
+      });
+      updatedBookList();
+    }
+    catch (error) {
+      if (error.response) {
+        // Request was made and server responded with a status code
+        // that falls out of the range of 2xx
+        console.error("Server responded with error status:", error.response.status);
+        console.error("Error data:", error.response.data);
+        toast.error("Server responded with an error. Please try again later.");
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received from the server.");
+        toast.error("No response received from the server. Please try again later.");
       } else {
-        console.error('Failed to upload book details');
+        // Something happened in setting up the request that triggered an Error
+        console.error("Error setting up the request:", error.message);
+        toast.error("An unexpected error occurred. Please try again later.");
       }
-    } catch (error) {
-      console.error('Error uploading book details:', error);
     }
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImage(file);
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
 
-    reader.onload = () => {
-      setPreview(reader.result);
-    };
+
+
+  // delete a book
+  const handleDeleteBook = async (bookId) => {
+
+    try {
+      await instance2.delete(`/books/delete/${bookId}`);
+      console.log("Book deleted:", bookId);
+      toast.success("Book deleted successfully");
+      // Optionally, update the list of books after deleting
+      updatedBookList();
+    } catch (error) {
+      console.error("Error deleting book: ", error);
+      toast.error("Error deleting book");
+    }
   };
 
-  const handleResetClick = () => {
-    setPreview(null);
-    setImage(null);
-    setBookName("");
-    setImgName("");
+
+  //Showing add book page
+  const handleAddBook = () => {
+    setShowAddDialog(true);
+  };
+
+  //Show edit book page
+  // const handleEditBook = (bookId) => {
+  //   setSelectedBook(bookId);
+  //   setShowEditDialog(true);
+  // };
+
+  const handleEditBook = (book) => {
+    setSelectedBook(book); // Set the entire book object here
+    setShowEditDialog(true);
+  };
+
+
+  // update existing book
+  // update existing book
+const handleUpdateBook = async () => {
+  try {
+    const response = await instance2.put(`/books/update/${selectedBook.bookId}`, selectedBook);
+    console.log("Book updated:", response.data);
+    toast.success("Book updated successfully");
+    // Update the list of books after updating
+    updatedBookList();
+  } catch (error) {
+    console.error("Error updating book: ", error);
+    toast.error("Error updating book");
+  }
+};
+
+
+  // function to fetch updated list of books
+  const updatedBookList = async () => {
+    try {
+      const response = await instance2.get("/books/getAll");
+      setAllBooks(response.data);
+    } catch (error) {
+      console.error("Error updating book list: ", error);
+    }
   };
 
   return (
-    <div className="h-screen sm:px-8 md:px-16 sm:py-8 bg-white">
-      <div className="container mx-auto max-w-screen-lg h-full">
-        <header className="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center">
-          <input
-            type="text"
-            placeholder="Enter book name"
-            value={bookName}
-            onChange={(e) => setBookName(e.target.value)}
-            className="mb-3 px-3 py-1 border rounded-sm text-black"
-          />
-          <input
-            id="hidden-input"
-            type="file"
-            className="hidden"
-            onChange={handleImageChange}
-            accept="image/*"
-          />
-          <label htmlFor="hidden-input" className="cursor-pointer">
-            <div className="mt-2 rounded-sm px-3 py-1 bg-gray-800 text-white hover:bg-gray-600 focus:shadow-outline focus:outline-none">
-              Upload a file
-            </div>
-          </label>
+    <>
+      <Toaster />
+      <div className="flex justify-end mb-5">
+        <Button
+          className="m-0 w-[150px] h-[50px] mr-[10px] text-lg"
+          type="button"
+          onClick={handleAddBook}
+        >
+          Add New Book
+        </Button>
+      </div>
+      <Table>
+        <TableCaption>Manage Book Store</TableCaption>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Book ID</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Author</TableHead>
+            <TableHead>Publisher</TableHead>
+            <TableHead>ISBN</TableHead>
+            <TableHead>Added On</TableHead>
+            <TableHead>Quantity</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {allBooks.map((book) => (
+            <TableRow key={book.bookId}>
+              <TableCell>{book.bookId}</TableCell>
+              <TableCell>{book.bookName}</TableCell>
+              <TableCell>{book.bookAuthor}</TableCell>
+              <TableCell>{book.publisher}</TableCell>
+              <TableCell>{book.isbn}</TableCell>
+              <TableCell>{book.addedOn}</TableCell>
+              <TableCell>{book.quantity}</TableCell>
+              <TableCell>
+                <>
+                  <Button
+                    onClick={() => handleDeleteBook(book.bookId)}
+                    variant="destructive"
+                    size="icon">
+                    <Trash2 size={20} />
+                  </Button>
+                  {"  "}
+                  <Button
+                    onClick={() => handleEditBook(book)}
+                    variant="secondary"
+                    size="icon">
+                    <NotebookPen size={20} />
+                  </Button>
+                </>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
-          <div className="flex justify-center items-center mt-5 mx-3 max-w-xs">
-            {preview && <img src={preview} alt="preview" className="w-full" />}
-          </div>
-        </header>
-        <div className="flex justify-end pb-8 pt-6 gap-4">
-          <button
-            onClick={uploadImage}
-            className="rounded-sm px-3 py-1 bg-blue-700 text-white hover:bg-blue-500 focus:shadow-outline focus:outline-none disabled:cursor-not-allowed"
-            disabled={!image || !bookName}
-          >
-            Upload now
-          </button>
-          <button
-            onClick={handleResetClick}
-            className="rounded-sm px-3 py-1 bg-red-700 text-white hover:bg-red-500 focus:shadow-outline focus:outline-none"
-          >
-            Reset
-          </button>
-        </div>
-        {loading ? (
-          <div className="flex items-center justify-center gap-2">
-            <div className="border-t-transparent border-solid animate-spin rounded-full border-blue-400 border-4 h-6 w-6"></div>
-            <span>Processing...</span>
-          </div>
-        ) : (
-          <div>
-            {imgName && (
-              <div className="pb-8 pt-4">
-                <p className="text-black mb-2">Book Name: {bookName}</p>
-                <Image
-                  cloudName="dtsxmoqei"
-                  publicId={imgName}
-                  width="300"
-                  crop="scale"
+      {showAddDialog && (
+        <Dialog open>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Add New Book</DialogTitle>
+              <Button
+                onClick={() => setShowAddDialog(false)}
+                aria-label="Close"
+                className="absolute top-0 right-0 mt-2 mr-2 w-8 h-8"
+                style={{ lineHeight: "1", padding: "0" }}
+              >
+                <X size={24} />
+              </Button>
+            </DialogHeader>
+
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="book_name">Book Name</Label>
+                <Input
+                  id="book_name"
+                  value={newBook.bookName}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, bookName: e.target.value })
+                  }
+                  className="col-span-3"
+                  required
                 />
               </div>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="author">Author</Label>
+                <Input
+                  id="author"
+                  value={newBook.bookAuthor}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, bookAuthor: e.target.value })
+                  }
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="publisher">Publisher</Label>
+                <Input
+                  id="publisher"
+                  value={newBook.publisher}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, publisher: e.target.value })
+                  }
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="isbn">ISBN</Label>
+                <Input
+                  id="isbn"
+                  value={newBook.isbn}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, isbn: e.target.value })
+                  }
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  value={newBook.quantity}
+                  onChange={(e) =>
+                    setNewBook({ ...newBook, quantity: e.target.value })
+                  }
+                  className="col-span-3"
+                  required
+                />
+              </div>
+              {/* <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="addedOn">Added On</Label>
 
-export default ManageBooks;
+                <DatePicker id="addedOn"
+                  value={newBook.addedOn}
+                  onSelect={(e) =>
+                    setNewBook({ ...newBook, addedOn: e.target.value })}
+                />
+              </div> */}
+            </div>
+            <DialogFooter>
+              <Button
+                type="button"
+                onClick={handleSaveNewBook}
+              >
+                Save Book
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {showEditDialog && (
+        <Dialog open>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Edit Book Details</DialogTitle>
+              <DialogDescription>
+                Make the necessary changes related to books here. And click "save" when you're done.
+              </DialogDescription>
+              <Button
+                onClick={() => {
+                  setShowEditDialog(false);
+                }}
+                aria-label="Close"
+                className="absolute top-0 right-0 mt-2 mr-2 w-8 h-8"
+                style={{ lineHeight: "1", padding: "0" }}
+              >
+                <X size={24} />
+              </Button>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="book_name">Book Name</Label>
+                <Input
+                  id="book_name"
+                  value={selectedBook?.bookName || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, bookName: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="author">Author</Label>
+                <Input
+                  id="author"
+                  value={selectedBook?.bookAuthor || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, bookAuthor: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="publisher">Publisher</Label>
+                <Input
+                  id="publisher"
+                  value={selectedBook?.publisher || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, publisher: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="isbn">ISBN</Label>
+                <Input
+                  id="isbn"
+                  value={selectedBook?.isbn || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, isbn: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="quantity">Quantity</Label>
+                <Input
+                  id="quantity"
+                  value={selectedBook?.quantity || ''}
+                  onChange={(e) => setSelectedBook({ ...selectedBook, quantity: e.target.value })}
+                  className="col-span-3"
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button type="button" onClick={handleUpdateBook}>
+                Save changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+    </>
+  );
+
+
+}
+
+
+
+
+// const ManageBooks = () => {
+//   const [image, setImage] = useState(null);
+//   const [bookName, setBookName] = useState("");
+//   const [imgName, setImgName] = useState(""); // State to hold the image name
+//   const [loading, setLoading] = useState(false);
+//   const [preview, setPreview] = useState(null);
+
+//   const uploadImage = async () => {
+//     setLoading(true);
+//     const data = new FormData();
+//     data.append("file", image);
+//     data.append("book_name", bookName); // Assuming you want to send the book name to Cloudinary
+//     data.append("cloud_name", "drndhbibq");
+//     data.append("upload_preset", "doba_test");
+
+//     try {
+//       const response = await fetch(
+//         `https://api.cloudinary.com/v1_1/drndhbibq/image/upload`,
+//         {
+//           method: "POST",
+//           body: data,
+//         }
+//       );
+//       const res = await response.json();
+//       setImgName(res.public_id); // Set image name (assuming public_id is the image name)
+//       setLoading(false);
+
+//       // Now, send the book details to your API
+//       uploadBookDetails(bookName, res.public_id);
+//     } catch (error) {
+//       console.error("Error uploading image:", error);
+//       setLoading(false);
+//     }
+//   };
+
+//   const uploadBookDetails = async (bookName, imgName) => {
+//     const bookData = {
+//       bookName,
+//       imgName,
+//     };
+
+//     try {
+//       const response = await fetch('http://localhost:8080/books/add', {
+//         method: 'POST',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(bookData),
+//       });
+
+//       if (response.ok) {
+//         console.log('Book details uploaded successfully');
+//       } else {
+//         console.error('Failed to upload book details');
+//       }
+//     } catch (error) {
+//       console.error('Error uploading book details:', error);
+//     }
+//   };
+
+//   const handleImageChange = (event) => {
+//     const file = event.target.files[0];
+//     setImage(file);
+
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+
+//     reader.onload = () => {
+//       setPreview(reader.result);
+//     };
+//   };
+
+//   const handleResetClick = () => {
+//     setPreview(null);
+//     setImage(null);
+//     setBookName("");
+//     setImgName("");
+//   };
+
+//   return (
+//     <>
+//       <div className="h-screen sm:px-8 md:px-16 sm:py-8 bg-white">
+//         <div className="container mx-auto max-w-screen-lg h-full">
+//           <header className="border-dashed border-2 border-gray-400 py-12 flex flex-col justify-center items-center">
+//             <input
+//               type="text"
+//               placeholder="Enter book name"
+//               value={bookName}
+//               onChange={(e) => setBookName(e.target.value)}
+//               className="mb-3 px-3 py-1 border rounded-sm text-black"
+//             />
+//             <input
+//               id="hidden-input"
+//               type="file"
+//               className="hidden"
+//               onChange={handleImageChange}
+//               accept="image/*"
+//             />
+//             <label htmlFor="hidden-input" className="cursor-pointer">
+//               <div className="mt-2 rounded-sm px-3 py-1 bg-gray-800 text-white hover:bg-gray-600 focus:shadow-outline focus:outline-none">
+//                 Upload a file
+//               </div>
+//             </label>
+
+//             <div className="flex justify-center items-center mt-5 mx-3 max-w-xs">
+//               {preview && <img src={preview} alt="preview" className="w-full" />}
+//             </div>
+//           </header>
+//           <div className="flex justify-end pb-8 pt-6 gap-4">
+//             <button
+//               onClick={uploadImage}
+//               className="rounded-sm px-3 py-1 bg-blue-700 text-white hover:bg-blue-500 focus:shadow-outline focus:outline-none disabled:cursor-not-allowed"
+//               disabled={!image || !bookName}
+//             >
+//               Upload now
+//             </button>
+//             <button
+//               onClick={handleResetClick}
+//               className="rounded-sm px-3 py-1 bg-red-700 text-white hover:bg-red-500 focus:shadow-outline focus:outline-none"
+//             >
+//               Reset
+//             </button>
+//           </div>
+//           {loading ? (
+//             <div className="flex items-center justify-center gap-2">
+//               <div className="border-t-transparent border-solid animate-spin rounded-full border-blue-400 border-4 h-6 w-6"></div>
+//               <span>Processing...</span>
+//             </div>
+//           ) : (
+//             <div>
+//               {imgName && (
+//                 <div className="pb-8 pt-4">
+//                   <p className="text-black mb-2">Book Name: {bookName}</p>
+//                   <Image
+//                     cloudName="dtsxmoqei"
+//                     publicId={imgName}
+//                     width="300"
+//                     crop="scale"
+//                   />
+//                 </div>
+//               )}
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </>
+
+//   );
+// };
+
+// export default ManageBooks;
