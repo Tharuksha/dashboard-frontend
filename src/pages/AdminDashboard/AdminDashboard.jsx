@@ -16,6 +16,8 @@ const AdminDashboard = () => {
     navigate("/login");
   };
 
+  document.title = 'Dashboard - Admin';
+
   const handleMenuClick = (element) => {
     setActiveComponent(() => element);
   };

@@ -26,6 +26,8 @@ export default function Register() {
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+  document.title = 'Sign Up';
+
   const registerUser = async (event) => {
     event.preventDefault();
     try {

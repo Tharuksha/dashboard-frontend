@@ -25,6 +25,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+  document.title = 'Login';
 
   const LoginAction = (event) => {
     event.preventDefault();
