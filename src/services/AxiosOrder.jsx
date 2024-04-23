@@ -2,11 +2,11 @@ import axios from "axios";
 
 export const instance = axios.create({
   baseURL:
-    "https://api-log.tharuksha.com/api",
+    "https://api-ad.tharuksha.com/api",
 });
 
 export const instance2 = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://api-ad.tharuksha.com",
 });
 
 
