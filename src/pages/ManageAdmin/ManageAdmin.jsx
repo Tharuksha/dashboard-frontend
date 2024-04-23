@@ -44,7 +44,7 @@ export default function ManageAdmin() {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   useEffect(() => {
-    instance2
+    instance
       .get("/users/admins")
       .then((response) => {
         if (Array.isArray(response.data)) {
