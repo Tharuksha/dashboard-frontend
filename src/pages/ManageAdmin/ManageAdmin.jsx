@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 import { useState, useEffect } from "react";
 import { Trash2, Loader2, NotebookPen, X } from "lucide-react";
-import { instance, instance2 } from "../../services/AxiosOrder";
+import { instance } from "../../services/AxiosOrder";
 import toast, { Toaster } from "react-hot-toast";
 import {
   Table,
@@ -108,7 +108,7 @@ export default function ManageAdmin() {
   const handleDelete = (userid) => {
     setLoading(true);
     setSelectedAdmin({ userid });
-    instance2
+    instance
       .delete(`/users/${userid}`)
       .then(() => {
         setAdmins((prevAdmins) =>
@@ -140,7 +140,7 @@ export default function ManageAdmin() {
           role: "admin",
         };
 
-        const response = await instance2.put(
+        const response = await instance.put(
           `/users/${selectedAdmin.userid}`,
           updatedUser
         );
