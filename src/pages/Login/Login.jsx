@@ -30,7 +30,7 @@ export default function Login() {
   const LoginAction = (event) => {
     event.preventDefault();
     instance
-      .post("/signin", { email, password })
+      .post("api/signin", { email, password })
       .then((response) => {
         const token = response.data.token;
         const role = response.data.role;

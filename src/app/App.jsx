@@ -3,8 +3,11 @@ import Login from "../pages/Login/Login";
 import Register from "../pages/Register/Register";
 import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import UserDashboard from "../pages/UserDashboard/UserDashboard";
+import ManageBooks from "@/pages/ManageBooks/ManageBooks";
+import DonateBooks from "@/pages/DonateBooks/DonateBooks";
 import { useEffect, useState } from "react";
 import "./globals.css";
+
 
 function App() {
   const [admindashboard, setAdminDashboard] = useState(false);
@@ -45,6 +48,10 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/user" element={<UserDashboard />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/books" element={<ManageBooks />} />
+          <Route path="/donatebooks" element={<DonateBooks />} />
+          
+          
         </Routes>
       )}
     </div>

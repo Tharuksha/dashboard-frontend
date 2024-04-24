@@ -1,6 +1,7 @@
 import ManageAdmin from "@/pages/ManageAdmin/ManageAdmin";
 import ManageBooks from "@/pages/ManageBooks/ManageBooks";
 import Orders from "@/pages/Orders/Orders";
+import DonateBooks from "@/pages/DonateBooks/DonateBooks";
 
 const routes = [
   {
@@ -20,6 +21,12 @@ const routes = [
     path: "/orders",
     key: "orders",
     element: <Orders />,
+  },
+  {
+    name: "Donate Books",
+    path: "/donatebooks",
+    key: "donatebooks",
+    element: <DonateBooks />,
   },
 ];
 

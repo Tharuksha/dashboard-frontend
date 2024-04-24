@@ -25,8 +25,8 @@ const AdminDashboard = () => {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Sidebar */}
-      <div className="bg-gray-800 text-white w-64 p-5">
-        <h1 className="text-3xl font-bold mb-5 text-center">Dashboard</h1>
+      <div className="bg-slate-950 text-white w-64 p-5">
+        <h1 className="text-3xl font-bold mb-5 text-center">DASHBOARD</h1>
         <ul>
           {routes.map((val) => (
             <li key={val.key} onClick={() => handleMenuClick(val.element)}>
@@ -39,7 +39,7 @@ const AdminDashboard = () => {
       {/* Main content area */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <div className="bg-gray-700 text-white p-5 flex justify-between items-center">
+        <div className="bg-slate-950 text-white p-5 flex justify-between items-center">
           <h2 className="text-2xl">Hello, {firstname}👋</h2>
 
           <Button onClick={handleLogout} variant="destructive" size="icon">
@@ -48,7 +48,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-5 bg-gray-700">
+        <div className="flex-1 p-5 bg-slate-900">
           <div>
             {activeComponent || (
               <div>Select a menu option to view its contents.</div>

@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const instance = axios.create({
   baseURL:
-    "https://api-ad.tharuksha.com/api",
+    "https://api-ad.tharuksha.com",
 });
 
 export const instance2 = axios.create({

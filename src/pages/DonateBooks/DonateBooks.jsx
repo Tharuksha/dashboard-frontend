@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Trash2, NotebookPen, X } from "lucide-react";
-import { instance2 } from "../../services/AxiosOrder";
+import { instance } from "../../services/AxiosOrder";
 import toast, { Toaster } from "react-hot-toast";
 import {
   Table,
@@ -24,7 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 
-export default function ManageBooks() {
+export default function DonateBooks() {
 
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
@@ -41,7 +41,7 @@ export default function ManageBooks() {
   });
   // show all the books in a array list
   useEffect(() => {
-    instance2
+    instance
       .get("/books/getAll")
       .then((response) => {
         if (Array.isArray(response.data)) {
@@ -62,7 +62,7 @@ export default function ManageBooks() {
   //save new book 
   const handleSaveNewBook = async () => {
     try {
-      const response = await instance2.post("/books/add", {
+      const response = await instance.post("/books/add", {
         bookName: newBook.bookName,
         bookAuthor: newBook.bookAuthor,
         publisher: newBook.publisher,
@@ -111,7 +111,7 @@ export default function ManageBooks() {
   const handleDeleteBook = async (bookId) => {
 
     try {
-      await instance2.delete(`/books/delete/${bookId}`);
+      await instance.delete(`/books/delete/${bookId}`);
       console.log("Book deleted:", bookId);
       toast.success("Book deleted successfully");
       // Optionally, update the list of books after deleting
@@ -144,7 +144,7 @@ export default function ManageBooks() {
   // update existing book
 const handleUpdateBook = async () => {
   try {
-    const response = await instance2.put(`/books/update/${selectedBook.bookId}`, selectedBook);
+    const response = await instance.put(`/books/update/${selectedBook.bookId}`, selectedBook);
     console.log("Book updated:", response.data);
     toast.success("Book updated successfully");
     // Update the list of books after updating
@@ -159,7 +159,7 @@ const handleUpdateBook = async () => {
   // function to fetch updated list of books
   const updatedBookList = async () => {
     try {
-      const response = await instance2.get("/books/getAll");
+      const response = await instance.get("/books/getAll");
       setAllBooks(response.data);
     } catch (error) {
       console.error("Error updating book list: ", error);
