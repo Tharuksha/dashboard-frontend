@@ -31,7 +31,7 @@ export default function Register() {
   const registerUser = async (event) => {
     event.preventDefault();
     try {
-      const response = await instance.post("api/signup", {
+      const response = await instance.post("/signup", {
         email,
         password,
         firstname,
