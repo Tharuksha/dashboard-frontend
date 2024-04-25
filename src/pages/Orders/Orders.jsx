@@ -34,8 +34,8 @@ export default function Orders() {
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
-          <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
+          <TableHead>Order Date</TableHead>
+          <TableHead>Note</TableHead>
           <TableHead>Shipping Address</TableHead>
           <TableHead>Contact Details</TableHead>
         </TableRow>
@@ -43,9 +43,9 @@ export default function Orders() {
       <TableBody>
         {orders.map((order) => (
           <TableRow key={order.id}>
-            <TableCell>{order.id}</TableCell>
-            <TableCell>{order.name}</TableCell>
-            <TableCell>{order.email}</TableCell>
+            <TableCell>{order.orderid}</TableCell>
+            <TableCell>{order.orderDate}</TableCell>
+            <TableCell>{order.note}</TableCell>
             <TableCell>{order.shippingAddress}</TableCell>
             <TableCell>{order.contactNumber}</TableCell>
           </TableRow>
