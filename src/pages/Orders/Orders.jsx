@@ -1,4 +1,4 @@
-import { instance3 } from "../../services/AxiosOrder";
+import { instance } from "../../services/AxiosOrder";
 import {
   Table,
   TableBody,
@@ -14,8 +14,8 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    instance3
-      .get("/all")
+    instance
+      .get("/orders/all")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setOrders(response.data);
