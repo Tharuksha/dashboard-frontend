@@ -2,6 +2,7 @@ import ManageAdmin from "@/pages/ManageAdmin/ManageAdmin";
 import ManageBooks from "@/pages/ManageBooks/ManageBooks";
 import Orders from "@/pages/Orders/Orders";
 import DonateBooks from "@/pages/DonateBooks/DonateBooks";
+import ManageCourier from "@/pages/ManageCourier/ManageCourier";
 
 const routes = [
   {
@@ -27,6 +28,12 @@ const routes = [
     path: "/donatebooks",
     key: "donatebooks",
     element: <DonateBooks />,
+  },
+  {
+    name: "Manage Courier",
+    path: "/managecourier",
+    key: "managecourier",
+    element: <ManageCourier />,
   },
 ];
 

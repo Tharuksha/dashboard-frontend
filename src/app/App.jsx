@@ -5,6 +5,7 @@ import AdminDashboard from "../pages/AdminDashboard/AdminDashboard";
 import UserDashboard from "../pages/UserDashboard/UserDashboard";
 import ManageBooks from "@/pages/ManageBooks/ManageBooks";
 import DonateBooks from "@/pages/DonateBooks/DonateBooks";
+import ManageCourier from "@/pages/ManageCourier/ManageCourier";
 import { useEffect, useState } from "react";
 import "./globals.css";
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/books" element={<ManageBooks />} />
           <Route path="/donatebooks" element={<DonateBooks />} />
+          <Route path="/managecourier" element={<ManageCourier />} />
           
           
         </Routes>
