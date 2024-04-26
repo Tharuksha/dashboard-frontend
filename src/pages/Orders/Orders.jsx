@@ -32,11 +32,11 @@ export default function Orders() {
       });
   }, []);
 
-  const handleDeleteOrder = async (orderId) => {
+  const handleDeleteOrder = async (orderid) => {
 
     try {
-      await instance.delete(`/orders/${orderId}`);
-      console.log("order deleted:", orderId);
+      await instance.delete(`/orders/${orderid}`);
+      console.log("order deleted:", orderid);
       toast.success("Order deleted successfully");
       // Optionally, update the list of books after deleting
       updatedOrderList();
