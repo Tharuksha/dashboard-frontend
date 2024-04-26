@@ -104,9 +104,6 @@ export default function ManageBooks() {
   };
 
 
-
-
-
   // delete a book
   const handleDeleteBook = async (bookId) => {
 

@@ -1,4 +1,6 @@
 import { instance } from "../../services/AxiosOrder";
+import { Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,6 +14,7 @@ import { useState, useEffect } from "react";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
+
 
   useEffect(() => {
     instance
@@ -28,6 +31,31 @@ export default function Orders() {
         console.error("Error loading orders:", error);
       });
   }, []);
+
+  const handleDeleteOrder = async (orderId) => {
+
+    try {
+      await instance.delete(`/orders/${orderId}`);
+      console.log("order deleted:", orderId);
+      toast.success("Order deleted successfully");
+      // Optionally, update the list of books after deleting
+      updatedOrderList();
+    } catch (error) {
+      console.error("Error deleting order: ", error);
+      toast.error("Error deleting order");
+    }
+  };
+
+   // function to fetch updated list of books
+   const updatedOrderList = async () => {
+    try {
+      const response = await instance.get("/orders/all");
+      setOrders(response.data);
+    } catch (error) {
+      console.error("Error updating order list: ", error);
+    }
+  };
+
   return (
     <Table>
       <TableCaption>All Orders</TableCaption>
@@ -48,6 +76,16 @@ export default function Orders() {
             <TableCell>{order.note}</TableCell>
             <TableCell>{order.shippingAddress}</TableCell>
             <TableCell>{order.contactNumber}</TableCell>
+            <TableCell>
+                <>
+                  <Button
+                    onClick={() => handleDeleteOrder(book.orderId)}
+                    variant="destructive"
+                    size="icon">
+                    <Trash2 size={20} />
+                  </Button>
+                </>
+              </TableCell>
           </TableRow>
         ))}
       </TableBody>
