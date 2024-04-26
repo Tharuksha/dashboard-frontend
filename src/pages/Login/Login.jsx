@@ -49,10 +49,10 @@ export default function Login() {
         if (role === "admin") {
           navigate("/admin");
         } else {
-          window.location.href = "https://home.tharuksha.com/";
-          localStorage.setItem("token", token);
-          localStorage.setItem("role", role);
-          localStorage.setItem("firstname", firstname);
+          // Construct the URL with query parameters to pass data
+        const url = `https://home.tharuksha.com/?token=${token}&role=${role}&firstname=${firstname}`;
+        // Redirect to the new URL
+        window.location.href = url;
           // navigate("/user");
         }
       })
