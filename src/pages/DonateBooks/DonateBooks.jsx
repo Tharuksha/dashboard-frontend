@@ -48,7 +48,7 @@ export default function Donations() {
       <TableBody>
         {donations.map((donation) => (
           <TableRow key={donation.id}>
-            <TableCell>{donation.id}</TableCell>
+            <TableCell>{donation.donationId}</TableCell>
             <TableCell>{donation.author}</TableCell>
             <TableCell>{donation.bookName}</TableCell>
             <TableCell>{donation.donationType}</TableCell>
