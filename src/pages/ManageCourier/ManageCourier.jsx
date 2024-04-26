@@ -1,4 +1,4 @@
-import { instance2 } from "../../services/AxiosOrder";
+import { instance } from "../../services/AxiosOrder";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
@@ -13,16 +13,16 @@ import {
 } from "@/components/ui/table";
 import { useState, useEffect } from "react";
 
-export default function Donations() {
-  const [donations, setDonations] = useState([]);
+export default function ManageCourier() {
+  const [courier, setCouriers] = useState([]);
 
 
   useEffect(() => {
-    instance2
-      .get("/donations/all")
+    instance
+      .get("/couriers/all")
       .then((response) => {
         if (Array.isArray(response.data)) {
-          setDonations(response.data);
+          setCouriers(response.data);
           console.log("Donations:", response.data);
         } else {
           console.log(response.data);
@@ -33,14 +33,14 @@ export default function Donations() {
       });
   }, []);
 
-  const handleDeleteDonations = async (donationId) => {
+  const handleDeleteCouriers = async (id) => {
 
     try {
-      await instance2.delete(`/donations/${donationId}`);
-      console.log("Donation deleted:", donationId);
+      await instance.delete(`/couriers/${id}`);
+      console.log("Donation deleted:", id);
       toast.success("Donation deleted successfully");
       // Optionally, update the list of books after deleting
-      updatedDonationList();
+      updatedCourierList();
     } catch (error) {
       console.error("Error deleting Donation: ", error);
       toast.error("Error deleting Donation");
@@ -48,10 +48,10 @@ export default function Donations() {
   };
 
    // function to fetch updated list of books
-   const updatedDonationList = async () => {
+   const updatedCourierList = async () => {
     try {
-      const response = await instance2.get("/donations/all");
-      setDonations(response.data);
+      const response = await instance.get("/donations/all");
+      setCouriers(response.data);
     } catch (error) {
       console.error("Error updating Donation list: ", error);
     }
@@ -61,28 +61,26 @@ export default function Donations() {
     <>
     <Toaster />
     <Table>
-      <TableCaption>All Donations</TableCaption>
+      <TableCaption>All Couriers</TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>ID</TableHead>
-          <TableHead>Author</TableHead>
-          <TableHead>Book Name</TableHead>
-          <TableHead>Donation Type</TableHead>
-          <TableHead>ISBN</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead>Contact Number</TableHead>
+          <TableHead>Delivery Area</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {donations.map((donation) => (
-          <TableRow key={donation.Id}>
-            <TableCell>{donation.donationId}</TableCell>
-            <TableCell>{donation.author}</TableCell>
-            <TableCell>{donation.bookName}</TableCell>
-            <TableCell>{donation.donationType}</TableCell>
-            <TableCell>{donation.isbn}</TableCell>
+        {courier.map((courier) => (
+          <TableRow key={courier.id}>
+            <TableCell>{courier.id}</TableCell>
+            <TableCell>{courier.name}</TableCell>
+            <TableCell>{courier.contactNumber}</TableCell>
+            <TableCell>{courier.deliveryArea}</TableCell>
             <TableCell>
                 <>
                   <Button
-                    onClick={() => handleDeleteDonations(donation.donationId)}
+                    onClick={() => handleDeleteCouriers(courier.id)}
                     variant="destructive"
                     size="icon">
                     <Trash2 size={20} />
