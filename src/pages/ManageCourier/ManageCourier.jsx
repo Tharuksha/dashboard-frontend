@@ -1,4 +1,4 @@
-import { instance } from "../../services/AxiosOrder";
+import { instance2 } from "../../services/AxiosOrder";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
@@ -18,7 +18,7 @@ export default function Donations() {
 
 
   useEffect(() => {
-    instance
+    instance2
       .get("/donations/all")
       .then((response) => {
         if (Array.isArray(response.data)) {
@@ -36,7 +36,7 @@ export default function Donations() {
   const handleDeleteDonations = async (donationId) => {
 
     try {
-      await instance.delete(`/donations/${donationId}`);
+      await instance2.delete(`/donations/${donationId}`);
       console.log("Donation deleted:", donationId);
       toast.success("Donation deleted successfully");
       // Optionally, update the list of books after deleting
@@ -50,7 +50,7 @@ export default function Donations() {
    // function to fetch updated list of books
    const updatedDonationList = async () => {
     try {
-      const response = await instance.get("/donations/all");
+      const response = await instance2.get("/donations/all");
       setDonations(response.data);
     } catch (error) {
       console.error("Error updating Donation list: ", error);
