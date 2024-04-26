@@ -35,10 +35,12 @@ export default function Login() {
         const token = response.data.token;
         const role = response.data.role;
         const firstname = response.data.firstname;
+        const userid = response.data.userid;
         console.log(response);
         localStorage.setItem("token", token);
         localStorage.setItem("role", role);
         localStorage.setItem("firstname", firstname);
+        localStorage.setItem("userid", userid);
 
         // Early return end if the token is not valid
         if (token === undefined) {
@@ -50,7 +52,7 @@ export default function Login() {
           navigate("/admin");
         } else {
           // Construct the URL with query parameters to pass data
-        const url = `https://home.tharuksha.com/?token=${token}&role=${role}&firstname=${firstname}`;
+        const url = `https://home.tharuksha.com/?userid=${userid}&firstname=${firstname}`;
         // Redirect to the new URL
         window.location.href = url;
           // navigate("/user");
