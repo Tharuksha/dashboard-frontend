@@ -50,7 +50,7 @@ export default function ManageCourier() {
    // function to fetch updated list of books
    const updatedCourierList = async () => {
     try {
-      const response = await instance.get("/donations/all");
+      const response = await instance.get("/couriers/all");
       setCouriers(response.data);
     } catch (error) {
       console.error("Error updating Donation list: ", error);
