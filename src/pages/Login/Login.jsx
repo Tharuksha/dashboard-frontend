@@ -50,6 +50,9 @@ export default function Login() {
           navigate("/admin");
         } else {
           window.location.href = "https://home.tharuksha.com/";
+          localStorage.setItem("token", token);
+          localStorage.setItem("role", role);
+          localStorage.setItem("firstname", firstname);
           // navigate("/user");
         }
       })

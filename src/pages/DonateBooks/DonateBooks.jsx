@@ -42,7 +42,7 @@ export default function DonateBooks() {
   // show all the books in a array list
   useEffect(() => {
     instance
-      .get("/books/getAll")
+      .get("/donations/all")
       .then((response) => {
         if (Array.isArray(response.data)) {
           setAllBooks(response.data);
