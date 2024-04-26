@@ -73,6 +73,7 @@ export default function ManageBooks() {
 
       //success message
       console.log("New book added:", response.data);
+      setShowAddDialog(false);
       toast.success("New book added successfully");
       setNewBook({
         bookName: "",
