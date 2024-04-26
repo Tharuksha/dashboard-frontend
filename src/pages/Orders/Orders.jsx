@@ -1,6 +1,7 @@
 import { instance } from "../../services/AxiosOrder";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import toast, { Toaster } from "react-hot-toast";
 import {
   Table,
   TableBody,
@@ -57,6 +58,8 @@ export default function Orders() {
   };
 
   return (
+    <>
+    <Toaster />
     <Table>
       <TableCaption>All Orders</TableCaption>
       <TableHeader>
@@ -90,5 +93,6 @@ export default function Orders() {
         ))}
       </TableBody>
     </Table>
+    </>
   );
 }
