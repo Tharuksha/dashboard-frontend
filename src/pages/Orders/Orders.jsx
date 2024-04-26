@@ -79,7 +79,7 @@ export default function Orders() {
             <TableCell>
                 <>
                   <Button
-                    onClick={() => handleDeleteOrder(book.orderId)}
+                    onClick={() => handleDeleteOrder(order.orderId)}
                     variant="destructive"
                     size="icon">
                     <Trash2 size={20} />
